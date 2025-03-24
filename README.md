@@ -50,3 +50,20 @@ print("inverse() one from matrix", ur3e_arm.inverse(pose_matrix, False, q_guess=
 For a new robot just create the ikfast database (.cpp) following one of these tutorials:
 - http://docs.ros.org/kinetic/api/framefab_irb6600_support/html/doc/ikfast_tutorial.html
 - http://docs.ros.org/kinetic/api/moveit_tutorials/html/doc/ikfast/ikfast_tutorial.html
+
+As reference, we include the steps needed to create the `ikfast` database for the UR3e + Hand-e configuration (*iscoin*). Given that the script is based on (almost) deprecated packages, it is recommended to run `sudo apt install python-is-python3` for compatibility reasons. Then, running
+
+```shell
+ros2 run moveit_kinematics auto_create_ikfast_moveit_plugin.sh --iktype Transform6D ./iscoin/iscoin.urdf ur_manipulator base_link hand_e_link
+```
+
+will create the `ikfast_moveit_plugin.cpp` (only needed when using the `moveit` robot control interface) and the `ikfast_solver.cpp` (the IK solver needed to generate the database).
+
+The source file `ikfast_solver.cpp` is renamed to `iscoin_ikfast61.cpp`, and the files `ikfast_wrapper.cpp` and `iscoin_ikfast.pyx` are copied from the directory corresponding to another configuration (e.g., `ur3e`). The database `iscoin_ikfast.cpp` is generated during the install.
+
+## Example
+```python
+from ur_ikfast import ur_kinematics
+
+iscoin_arm = ur_kinematics.URKinematics('iscoin')
+```
